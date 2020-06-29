@@ -14,6 +14,9 @@ class Users {
   @Column()
   password: string;
 
+  @Column()
+  avatar: string;
+
   @Column('timestamp')
   created_at: Date;
 
