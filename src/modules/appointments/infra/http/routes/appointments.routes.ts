@@ -7,8 +7,6 @@ import authMiddleware from '@modules/users/infra/http/middlewares/ensureAuthenti
 
 const appointmentsRouter = Router();
 
-const appointmentsRepository = new AppointmentRepository();
-
 appointmentsRouter.use(authMiddleware);
 
 // appointmentsRouter.get('/', async (request, response) => {
@@ -21,6 +19,8 @@ appointmentsRouter.post('/', async (request, response) => {
   const { provider_id, date } = request.body;
 
   const parsedDate = parseISO(date);
+
+  const appointmentsRepository = new AppointmentRepository();
 
   const createAppointment = new CreateAppointmentService(
     appointmentsRepository,
