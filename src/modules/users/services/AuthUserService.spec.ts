@@ -4,17 +4,22 @@ import FakeHashProvider from '@modules/users/providers/HashProvider/fakes/FakeHa
 import AuthUserService from './AuthUserService';
 import CreateUserService from './CreateUserService';
 
+let fakeUsersRepository: FakeUsersRepository;
+let fakeHashProvider: FakeHashProvider;
+let createUser: CreateUserService;
+let authUser: AuthUserService;
+
 describe('AuthUser', () => {
+  beforeEach(() => {
+    fakeUsersRepository = new FakeUsersRepository();
+    fakeHashProvider = new FakeHashProvider();
+
+    createUser = new CreateUserService(fakeUsersRepository, fakeHashProvider);
+
+    authUser = new AuthUserService(fakeUsersRepository, fakeHashProvider);
+  });
+
   it('should be able to authenticate a user', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeHashProvider = new FakeHashProvider();
-
-    const createUser = new CreateUserService(
-      fakeUsersRepository,
-      fakeHashProvider,
-    );
-    const authUser = new AuthUserService(fakeUsersRepository, fakeHashProvider);
-
     const user = await createUser.execute({
       name: 'John Doe',
       email: 'johndoe@example.com',
@@ -31,11 +36,6 @@ describe('AuthUser', () => {
   });
 
   it('should not be able to authenticate with non existing user', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeHashProvider = new FakeHashProvider();
-
-    const authUser = new AuthUserService(fakeUsersRepository, fakeHashProvider);
-
     await expect(
       authUser.execute({
         email: 'johndoe@example.com',
@@ -47,15 +47,6 @@ describe('AuthUser', () => {
 
 describe('AuthUser', () => {
   it('should not be able to authenticate if password does not match', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeHashProvider = new FakeHashProvider();
-
-    const createUser = new CreateUserService(
-      fakeUsersRepository,
-      fakeHashProvider,
-    );
-    const authUser = new AuthUserService(fakeUsersRepository, fakeHashProvider);
-
     await createUser.execute({
       name: 'John Doe',
       email: 'johndoe@example.com',
